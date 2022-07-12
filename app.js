@@ -38,6 +38,16 @@ app.get("/compose", function(req, res){
   res.render("compose");
 });
 
+app.get("/posts/:postName", function(req, res){
+  posts.forEach(function(post){
+    if(post.postTitle === req.params.postName){
+      console.log("Match Found!");
+    } else {
+      console.log("Try again!");
+    }
+  });
+});
+
 app.post("/compose", function(req, res){
 
   const newPost = {
