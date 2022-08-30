@@ -58,36 +58,27 @@ app.get("/compose", function(req, res){
 
 });
 
-app.get("/posts/:postName", function(req, res){
+app.get("/posts/:postId", function(req, res){
 
-  const requestedTitle = _.lowerCase(req.params.postName);
+  const requestedPostId = req.params.postId;
+    
+  Post.findOne({_id: requestedPostId}, function(err, post){
 
-  posts.forEach(function(post){
-    const storedTitle = _.lowerCase(post.postTitle);
-
-    if(storedTitle === requestedTitle){
-      res.render("post", {
-        postTitle: post.postTitle,
-        postContent: post.postContent
-      })
-    } else {
-      console.log("Try again!");
-    }
-
-  });
-
+    res.render("post", {
+      title: post.title,
+      content: post.content
+    })
+  
+  })
+    
 });
+   
 
 //Lógica para publicar posts
 app.post("/compose", function(req, res){
 
   const postTitle = req.body.postTitle
   const postContent = req.body.postContent
-
-  const post = new Post({
-    title: postTitle,
-    content: postContent
-  })
 
   post.save(function(err){
     !err ?  res.redirect("/") : console.log(err)
