@@ -2,6 +2,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
+const mongoose = require("mongoose");
 const _ = require('lodash');
 
 // Lorem ipsum
@@ -17,6 +18,16 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 //Backend
+
+//Database
+
+mongoose.connect("mongodb://localhost:27017/blogDB", {useNewUrlParser: true});
+
+const postSchema = {
+  title: String,
+  content: String
+}
+const Post = mongoose.model("Post", postSchema);
 
 //Inicialização das páginas
 app.get("/", function(req, res){
@@ -71,13 +82,19 @@ app.get("/posts/:postName", function(req, res){
 //Lógica para publicar posts
 app.post("/compose", function(req, res){
 
-  const newPost = {
-    postTitle: req.body.postTitle,
-    postContent: req.body.postContent
-  }
+  const postTitle = req.body.postTitle
+  const postContent = req.body.postContent
 
-  posts.push(newPost);
+  const post = new Post({
+    title: postTitle,
+    content: postContent
+  })
+
+  posts.push(post);
   res.redirect("/");
+
+  post.save();
+  console.log(post);
 
 });
 
@@ -85,5 +102,5 @@ app.post("/compose", function(req, res){
 app.listen(3000, function() {
 
   console.log("Server started on port 3000");
-  
+
 });
