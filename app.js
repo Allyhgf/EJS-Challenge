@@ -31,37 +31,45 @@ const Post = mongoose.model("Post", postSchema);
 //Inicialização das páginas
 app.get("/", function(req, res){
 
-    Post.find({}, function(err, posts){
-      res.render("home", {
-        homeStartingContent: homeStartingContent,
-        posts: posts,
-      });
-    })
+  //Buscando na database por todos os documentos da coleção posts e renderizando na home.ejs
+  Post.find({}, function(err, posts){
+
+    res.render("home", {
+      homeStartingContent: homeStartingContent,
+      posts: posts,
+    });
+    
+  });
     
 });
 
+//Página sobre (placeholder)
 app.get("/about", function(req, res){
 
   res.render("about", {aboutContent: aboutContent});
 
 });
 
+//Página de contato (placeholder)
 app.get("/contact", function(req, res){
 
   res.render("contact", {contactContent: contactContent});
 
 });
 
+//Página para compor os posts (acessível apenas direto na URL)
 app.get("/compose", function(req, res){
 
   res.render("compose");
 
 });
 
+//Levando o usuário para o post quando ele clicka no Read More
 app.get("/posts/:postId", function(req, res){
 
   const requestedPostId = req.params.postId;
     
+  //Ele procura na DB qual único post tem o mesmo ID do que teve o Read More clickado e redireciona o usuário
   Post.findOne({_id: requestedPostId}, function(err, post){
 
     res.render("post", {
